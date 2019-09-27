@@ -2,13 +2,17 @@ package com.bobocode;
 
 import com.bobocode.exception.EntityNotFoundException;
 import com.bobocode.model.Account;
+import com.bobocode.model.Sex;
 
 import java.math.BigDecimal;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toMap;
+import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
 
 /**
  * Implement methods using Stream API
@@ -30,7 +34,18 @@ public class AccountAnalytics {
      * @return account with max balance wrapped with optional
      */
     public Optional<Account> findRichestPerson() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .max(comparing(Account::getBalance));
+
+//        OptionalInt max = accounts.stream()
+//                .map(Account::getBalance)
+//                .mapToInt(BigDecimal::intValue)
+//                .max();
+//
+//        return accounts.stream()
+//                .filter(account -> account.getBalance().intValue() == max.getAsInt())
+//                .findAny();
     }
 
     /**
@@ -40,7 +55,10 @@ public class AccountAnalytics {
      * @return a list of accounts
      */
     public List<Account> findAccountsByBirthdayMonth(Month birthdayMonth) {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .filter(account -> account.getBirthday().getMonth().equals(birthdayMonth))
+                .collect(toList());
     }
 
     /**
@@ -50,7 +68,9 @@ public class AccountAnalytics {
      * @return a map where key is true or false, and value is list of male, and female accounts
      */
     public Map<Boolean, List<Account>> partitionMaleAccounts() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .collect(groupingBy(account -> account.getSex().equals(Sex.MALE)));
     }
 
     /**
@@ -60,7 +80,9 @@ public class AccountAnalytics {
      * @return a map where key is an email domain and value is a list of all account with such email
      */
     public Map<String, List<Account>> groupAccountsByEmailDomain() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .collect(groupingBy(account -> account.getEmail().split("@")[1]));
     }
 
     /**
@@ -69,7 +91,10 @@ public class AccountAnalytics {
      * @return total number of letters of first and last names of all accounts
      */
     public int getNumOfLettersInFirstAndLastNames() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .mapToInt(account -> account.getFirstName().length() + account.getLastName().length())
+                .sum();
     }
 
     /**
@@ -78,7 +103,10 @@ public class AccountAnalytics {
      * @return total balance of all accounts
      */
     public BigDecimal calculateTotalBalance() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .map(Account::getBalance)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
@@ -87,7 +115,10 @@ public class AccountAnalytics {
      * @return list of accounts sorted by first and last names
      */
     public List<Account> sortByFirstAndLastNames() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .sorted(comparing(Account::getFirstName).thenComparing(Account::getLastName))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -97,7 +128,9 @@ public class AccountAnalytics {
      * @return true if there is an account that has an email with provided domain
      */
     public boolean containsAccountWithEmailDomain(String emailDomain) {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .anyMatch(a -> a.getEmail().endsWith(emailDomain));
     }
 
     /**
@@ -108,7 +141,13 @@ public class AccountAnalytics {
      * @return account balance
      */
     public BigDecimal getBalanceByEmail(String email) {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .filter(account -> account.getEmail().equals(email))
+                .findFirst()
+                .map(Account::getBalance)
+//                .reduce(BigDecimal::add)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find Account by email=" + email));
     }
 
     /**
@@ -117,7 +156,9 @@ public class AccountAnalytics {
      * @return map of accounts by its ids
      */
     public Map<Long, Account> collectAccountsById() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .collect(toMap(Account::getId, identity()));
     }
 
     /**
@@ -128,7 +169,10 @@ public class AccountAnalytics {
      * @return map of account by its ids the were created in a particular year
      */
     public Map<String, BigDecimal> collectBalancesByIdForAccountsCreatedOn(int year) {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .filter(a -> a.getCreationDate().getYear() == year)
+                .collect(toMap(Account::getEmail, Account::getBalance));
     }
 
     /**
@@ -138,7 +182,9 @@ public class AccountAnalytics {
      * @return a map where key is a last name and value is a set of first names
      */
     public Map<String, Set<String>> groupFirstNamesByLastNames() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .collect(groupingBy(Account::getLastName, mapping(Account::getFirstName, toSet())));
     }
 
     /**
@@ -148,7 +194,9 @@ public class AccountAnalytics {
      * @return a map where a key is a birthday month and value is comma-separated first names
      */
     public Map<Month, String> groupCommaSeparatedFirstNamesByBirthdayMonth() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .collect(groupingBy(a -> a.getBirthday().getMonth(), mapping(Account::getFirstName, joining(", "))));
     }
 
     /**
@@ -158,7 +206,9 @@ public class AccountAnalytics {
      * @return a map where key is a creation month and value is total balance of all accounts created in that month
      */
     public Map<Month, BigDecimal> groupTotalBalanceByCreationMonth() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .collect(groupingBy(a -> a.getCreationDate().getMonth(), mapping(Account::getBalance, reducing(BigDecimal.ZERO, BigDecimal::add))));
     }
 
     /**
@@ -168,7 +218,12 @@ public class AccountAnalytics {
      * @return a map where key is a letter and value is its count in all first names
      */
     public Map<Character, Long> getCharacterFrequencyInFirstNames() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .map(Account::getFirstName)
+                .flatMapToInt(String::chars)
+                .mapToObj(c -> (char) c)
+                .collect(groupingBy(identity(), counting()));
     }
 
     /**
@@ -177,8 +232,15 @@ public class AccountAnalytics {
      *
      * @return a map where key is a letter and value is its count ignoring case in all first and last names
      */
+    @SuppressWarnings("JavadocReference")
     public Map<Character, Long> getCharacterFrequencyIgnoreCaseInFirstAndLastNames() {
-        throw new UnsupportedOperationException("It's your job to implement this method"); // todo
+        // todo
+        return accounts.stream()
+                .flatMap(account -> Stream.of(account.getFirstName(), account.getLastName()))
+                .map(String::toUpperCase)
+                .flatMapToInt(String::chars)
+                .mapToObj(c -> (char) c)
+                .collect(groupingBy(identity(), counting()));
     }
 
 }
