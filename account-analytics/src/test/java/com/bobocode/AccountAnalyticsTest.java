@@ -50,16 +50,16 @@ public class AccountAnalyticsTest {
 
     @Test
     public void testSeparateMaleAccounts() {
-        Map<Boolean, List<Account>> expectedAccountMap = getExpectedMaleMap();
-        Map<Boolean, List<Account>> maleToAccountsMap = analytics.partitionMaleAccounts();
+        Map<Sex, List<Account>> expectedAccountMap = getExpectedMaleMap();
+        Map<Sex, List<Account>> maleToAccountsMap = analytics.partitionMaleAccounts();
 
         assertEquals(expectedAccountMap, maleToAccountsMap);
     }
 
-    private Map<Boolean, List<Account>> getExpectedMaleMap() {
-        Map<Boolean, List<Account>> expectedMap = new HashMap<>(2);
-        expectedMap.put(Boolean.TRUE, Arrays.asList(accounts.get(0), accounts.get(2), accounts.get(3)));
-        expectedMap.put(Boolean.FALSE, Arrays.asList(accounts.get(1)));
+    private Map<Sex, List<Account>> getExpectedMaleMap() {
+        Map<Sex, List<Account>> expectedMap = new HashMap<>(2);
+        expectedMap.put(Sex.MALE, Arrays.asList(accounts.get(0), accounts.get(2), accounts.get(3)));
+        expectedMap.put(Sex.FEMALE, Arrays.asList(accounts.get(1)));
         return expectedMap;
     }
 

@@ -26,7 +26,6 @@ public class SumOfSquares {
             throw new InvalidRangeException();
         }
 
-        // todo: refactor using functional approach
         return IntStream.rangeClosed(startInclusive, endInclusive)
                 .map(i -> i * i)
                 .sum();

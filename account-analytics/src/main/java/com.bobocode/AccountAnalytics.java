@@ -34,7 +34,6 @@ public class AccountAnalytics {
      * @return account with max balance wrapped with optional
      */
     public Optional<Account> findRichestPerson() {
-        // todo
         return accounts.stream()
                 .max(comparing(Account::getBalance));
 
@@ -55,7 +54,6 @@ public class AccountAnalytics {
      * @return a list of accounts
      */
     public List<Account> findAccountsByBirthdayMonth(Month birthdayMonth) {
-        // todo
         return accounts.stream()
                 .filter(account -> account.getBirthday().getMonth().equals(birthdayMonth))
                 .collect(toList());
@@ -67,10 +65,9 @@ public class AccountAnalytics {
      *
      * @return a map where key is true or false, and value is list of male, and female accounts
      */
-    public Map<Boolean, List<Account>> partitionMaleAccounts() {
-        // todo
+    public Map<Sex, List<Account>> partitionMaleAccounts() {
         return accounts.stream()
-                .collect(groupingBy(account -> account.getSex().equals(Sex.MALE)));
+                .collect(groupingBy(Account::getSex));
     }
 
     /**
@@ -80,7 +77,6 @@ public class AccountAnalytics {
      * @return a map where key is an email domain and value is a list of all account with such email
      */
     public Map<String, List<Account>> groupAccountsByEmailDomain() {
-        // todo
         return accounts.stream()
                 .collect(groupingBy(account -> account.getEmail().split("@")[1]));
     }
@@ -91,7 +87,6 @@ public class AccountAnalytics {
      * @return total number of letters of first and last names of all accounts
      */
     public int getNumOfLettersInFirstAndLastNames() {
-        // todo
         return accounts.stream()
                 .mapToInt(account -> account.getFirstName().length() + account.getLastName().length())
                 .sum();
@@ -103,7 +98,6 @@ public class AccountAnalytics {
      * @return total balance of all accounts
      */
     public BigDecimal calculateTotalBalance() {
-        // todo
         return accounts.stream()
                 .map(Account::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -115,7 +109,6 @@ public class AccountAnalytics {
      * @return list of accounts sorted by first and last names
      */
     public List<Account> sortByFirstAndLastNames() {
-        // todo
         return accounts.stream()
                 .sorted(comparing(Account::getFirstName).thenComparing(Account::getLastName))
                 .collect(Collectors.toList());
@@ -128,7 +121,6 @@ public class AccountAnalytics {
      * @return true if there is an account that has an email with provided domain
      */
     public boolean containsAccountWithEmailDomain(String emailDomain) {
-        // todo
         return accounts.stream()
                 .anyMatch(a -> a.getEmail().endsWith(emailDomain));
     }
@@ -141,7 +133,6 @@ public class AccountAnalytics {
      * @return account balance
      */
     public BigDecimal getBalanceByEmail(String email) {
-        // todo
         return accounts.stream()
                 .filter(account -> account.getEmail().equals(email))
                 .findFirst()
@@ -156,7 +147,6 @@ public class AccountAnalytics {
      * @return map of accounts by its ids
      */
     public Map<Long, Account> collectAccountsById() {
-        // todo
         return accounts.stream()
                 .collect(toMap(Account::getId, identity()));
     }
@@ -169,7 +159,6 @@ public class AccountAnalytics {
      * @return map of account by its ids the were created in a particular year
      */
     public Map<String, BigDecimal> collectBalancesByIdForAccountsCreatedOn(int year) {
-        // todo
         return accounts.stream()
                 .filter(a -> a.getCreationDate().getYear() == year)
                 .collect(toMap(Account::getEmail, Account::getBalance));
@@ -182,7 +171,6 @@ public class AccountAnalytics {
      * @return a map where key is a last name and value is a set of first names
      */
     public Map<String, Set<String>> groupFirstNamesByLastNames() {
-        // todo
         return accounts.stream()
                 .collect(groupingBy(Account::getLastName, mapping(Account::getFirstName, toSet())));
     }
@@ -194,7 +182,6 @@ public class AccountAnalytics {
      * @return a map where a key is a birthday month and value is comma-separated first names
      */
     public Map<Month, String> groupCommaSeparatedFirstNamesByBirthdayMonth() {
-        // todo
         return accounts.stream()
                 .collect(groupingBy(a -> a.getBirthday().getMonth(), mapping(Account::getFirstName, joining(", "))));
     }
@@ -206,7 +193,6 @@ public class AccountAnalytics {
      * @return a map where key is a creation month and value is total balance of all accounts created in that month
      */
     public Map<Month, BigDecimal> groupTotalBalanceByCreationMonth() {
-        // todo
         return accounts.stream()
                 .collect(groupingBy(a -> a.getCreationDate().getMonth(), mapping(Account::getBalance, reducing(BigDecimal.ZERO, BigDecimal::add))));
     }
@@ -218,7 +204,6 @@ public class AccountAnalytics {
      * @return a map where key is a letter and value is its count in all first names
      */
     public Map<Character, Long> getCharacterFrequencyInFirstNames() {
-        // todo
         return accounts.stream()
                 .map(Account::getFirstName)
                 .flatMapToInt(String::chars)
@@ -234,10 +219,9 @@ public class AccountAnalytics {
      */
     @SuppressWarnings("JavadocReference")
     public Map<Character, Long> getCharacterFrequencyIgnoreCaseInFirstAndLastNames() {
-        // todo
         return accounts.stream()
                 .flatMap(account -> Stream.of(account.getFirstName(), account.getLastName()))
-                .map(String::toUpperCase)
+                .map(String::toLowerCase)
                 .flatMapToInt(String::chars)
                 .mapToObj(c -> (char) c)
                 .collect(groupingBy(identity(), counting()));
